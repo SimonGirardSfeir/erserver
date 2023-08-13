@@ -1,81 +1,79 @@
 package erserver.modules.testtypes;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ChildClassificationTest {
+class ChildClassificationTest {
 
    private LocalDate currentDate;
 
 
-   @Before
+   @BeforeEach
    public void setUp() {
       currentDate = LocalDate.of(2000, 1, 10);
    }
 
    @Test
-   public void returnNeonateUpTo30DaysOld() {
-      assertEquals(ChildClassification.NEONATE,
-         ChildClassification.calculate(currentDate, currentDate));
+   void returnNeonateUpTo30DaysOld() {
+      assertThat(ChildClassification.calculate(currentDate, currentDate))
+              .isEqualTo(ChildClassification.NEONATE);
 
       LocalDate birthDate = currentDate.minusDays(29);
-      assertEquals(ChildClassification.NEONATE,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.NEONATE);
    }
 
    @Test
-   public void returnInfantFrom30DaysTo2Years() {
+   void returnInfantFrom30DaysTo2Years() {
       LocalDate birthDate = currentDate.minusDays(30);
-      assertEquals(ChildClassification.INFANT,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.INFANT);
 
       birthDate = currentDate.minusYears(2).plusDays(1);
-      assertEquals(ChildClassification.INFANT,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.INFANT);
    }
 
    @Test
-   public void returnChildFrom2YearsTo12years() {
+   void returnChildFrom2YearsTo12years() {
       LocalDate birthDate = currentDate.minusYears(2);
-      assertEquals(ChildClassification.CHILD,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.CHILD);
 
       birthDate = currentDate.minusYears(12).plusDays(1);
-      assertEquals(ChildClassification.CHILD,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.CHILD);
    }
 
    @Test
-   public void returnAdolescentFrom12YearsTo16years() {
+   void returnAdolescentFrom12YearsTo16years() {
       LocalDate birthDate = currentDate.minusYears(12);
-      assertEquals(ChildClassification.ADOLESCENT,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.ADOLESCENT);
 
       birthDate = currentDate.minusYears(16).plusDays(1);
-      assertEquals(ChildClassification.ADOLESCENT,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.ADOLESCENT);
    }
 
    @Test
-   public void returnUndefinedAfter16Years() {
+   void returnUndefinedAfter16Years() {
       LocalDate birthDate = currentDate.minusYears(16);
-      assertEquals(ChildClassification.UNDEFINED,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.UNDEFINED);
 
       birthDate = currentDate.minusYears(80);
-      assertEquals(ChildClassification.UNDEFINED,
-         ChildClassification.calculate(birthDate, currentDate));
+      assertThat(ChildClassification.calculate(birthDate, currentDate))
+              .isEqualTo(ChildClassification.UNDEFINED);
    }
 
    @Test
-   public void returnUndefinedIfBirthdateInFuture() {
-      assertEquals(ChildClassification.UNDEFINED,
-         ChildClassification.calculate(currentDate.plusDays(1), currentDate));
+   void returnUndefinedIfBirthdateInFuture() {
+      assertThat(ChildClassification.calculate(currentDate.plusDays(1), currentDate))
+              .isEqualTo(ChildClassification.UNDEFINED);
    }
-
-
 }

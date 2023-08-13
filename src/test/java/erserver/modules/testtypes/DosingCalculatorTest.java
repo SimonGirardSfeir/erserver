@@ -1,60 +1,65 @@
 package erserver.modules.testtypes;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 
-public class DosingCalculatorTest {
+class DosingCalculatorTest {
 
     private DosingCalculator dosingCalculator;
     private Patient patient;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dosingCalculator = new DosingCalculator();
         patient = new Patient();
     }
 
     @Test
-    public void returnsCorrectDosesForNeonate() {
+    void returnsCorrectDosesForNeonate() {
         patient.setBirthDate(LocalDate.now().minusDays(28));
         String singleDose = dosingCalculator.getRecommendedSingleDose(patient, "Tylenol Oral Suspension");
-        assertEquals("0", singleDose);
+        assertThat(singleDose).isEqualTo("0");
     }
 
     @Test
-    public void returnsCorrectDosesForInfant() {
+    void returnsCorrectDosesForInfant() {
         patient.setBirthDate(LocalDate.now().minusDays(40));
         String singleDose = dosingCalculator.getRecommendedSingleDose(patient, "Tylenol Oral Suspension");
-        assertEquals("2.5 ml", singleDose);
+        assertThat(singleDose).isEqualTo("2.5 ml");
     }
 
     @Test
-    public void returnsCorrectDosesForChild() {
+    void returnsCorrectDosesForChild() {
         patient.setBirthDate(LocalDate.now().minusYears(3));
         String singleDose = dosingCalculator.getRecommendedSingleDose(patient, "Tylenol Oral Suspension");
-        assertEquals("5 ml", singleDose);
+        assertThat(singleDose).isEqualTo("5 ml");
     }
 
     @Test
-    public void returnsCorrectDosesForNeonateAmox() {
+    void returnsCorrectDosesForNeonateAmox() {
         patient.setBirthDate(LocalDate.now().minusDays(20));
         String singleDose = dosingCalculator.getRecommendedSingleDose(patient, "Amoxicillin Oral Suspension");
-        assertEquals("15 mg/kg", singleDose);
+        assertThat(singleDose).isEqualTo("15 mg/kg");
     }
 
-    @Test(expected = RuntimeException.class)
-    public void returnsExceptionForAdults() {
+    @Test
+    void returnsExceptionForAdults() {
         patient.setBirthDate(LocalDate.now().minusYears(16));
-        dosingCalculator.getRecommendedSingleDose(patient, "Amoxicillin Oral Suspension");
+        assertThatRuntimeException().isThrownBy(
+                () -> dosingCalculator.getRecommendedSingleDose(patient, "Amoxicillin Oral Suspension")
+        );
     }
 
-    @Test(expected = RuntimeException.class)
-    public void returnsNullForUnrecognizedMedication() {
+    @Test
+    void returnsNullForUnrecognizedMedication() {
         patient.setBirthDate(LocalDate.now().minusYears(16));
-        dosingCalculator.getRecommendedSingleDose(patient, "No Such Med");
+        assertThatRuntimeException().isThrownBy(
+                () -> dosingCalculator.getRecommendedSingleDose(patient, "No Such Med")
+        );
     }
 }
