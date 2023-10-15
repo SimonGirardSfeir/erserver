@@ -3,6 +3,7 @@ package erserver.modules.testtypes;
 import erserver.modules.dependencies.Priority;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Patient {
 
@@ -54,5 +55,22 @@ public class Patient {
 
    public void setCondition(String condition) {
       this.condition = condition;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o)
+         return true;
+      if (o == null || getClass() != o.getClass())
+         return false;
+      Patient patient = (Patient) o;
+      return transportId == patient.transportId && Objects.equals(name, patient.name) &&
+              Objects.equals(birthDate, patient.birthDate) && priority == patient.priority &&
+              Objects.equals(condition, patient.condition);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(transportId, name, birthDate, priority, condition);
    }
 }

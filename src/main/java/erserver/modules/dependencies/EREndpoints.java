@@ -2,6 +2,10 @@ package erserver.modules.dependencies;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import erserver.modules.dependencies.gsonutils.LocalDateTypeAdapter;
+
+import java.time.LocalDate;
 
 import static spark.Spark.*;
 
@@ -14,7 +18,9 @@ public class EREndpoints {
    }
 
    public static void initializeEndpoints() {
-      Gson gson = new Gson();
+      final Gson gson = new GsonBuilder()
+              .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+              .create();
 
       get("/inboundPatients", (request, response) -> {
          System.out.println("Recieved request for inbound patients from client.");

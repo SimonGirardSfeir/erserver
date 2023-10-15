@@ -2,7 +2,11 @@ package erserver.modules.dependencies;
 
 import erserver.modules.testtypes.Patient;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StaffAssignmentManager {
 
@@ -11,14 +15,17 @@ public class StaffAssignmentManager {
    private HashMap<Bed, List<Staff>> bedStaffAssignments;
 
    public StaffAssignmentManager() {
-      StaffRepository staffRepo = new StaffRepository();
+      this(new StaffRepository(), new BedRepository());
+   }
+
+   public StaffAssignmentManager(StaffRepository staffRepository, BedRepository bedRepo) {
       shiftStaff = new ArrayList<>();
-      shiftStaff.addAll(staffRepo.getShiftStaff());
+      shiftStaff.addAll(staffRepository.getShiftStaff());
       beds = new ArrayList<>();
-      BedRepository bedRepo = new BedRepository();
       beds.addAll(bedRepo.getAllBeds());
       bedStaffAssignments = new HashMap<>();
    }
+
 
    public List<Staff> getShiftStaff() {
       return Collections.unmodifiableList(shiftStaff);
