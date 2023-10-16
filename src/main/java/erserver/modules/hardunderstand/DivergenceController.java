@@ -37,7 +37,7 @@ public class DivergenceController {
 
    public void check() {
       StaffAssignmentManager manager = new ERServerMainController().getStaffAssignmentManager();
-      InboundPatientController controller = new ERServerMainController().getInboundPatientController();
+      InboundPatientSource controller = new ERServerMainController().getInboundPatientController();
       int[] red = {1, 2};
       int[] yellow = {1, 1};
       int[] green = {0, 1};

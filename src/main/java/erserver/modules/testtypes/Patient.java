@@ -13,6 +13,16 @@ public class Patient {
    private Priority priority;
    private String condition;
 
+   public Patient() {
+   }
+   public Patient(int transportId, String name, LocalDate birthDate, Priority priority, String condition) {
+      this.transportId = transportId;
+      this.name = name;
+      this.birthDate = birthDate;
+      this.priority = priority;
+      this.condition = condition;
+   }
+
    public int getTransportId() {
       return transportId;
    }

@@ -5,9 +5,9 @@ import erserver.modules.testtypes.Patient;
 public class AssignPatientToBedCommand {
 
    private StaffAssignmentManager staffAssignmentManager;
-   private InboundPatientController inboundPatientController;
+   private InboundPatientSource inboundPatientController;
 
-   public AssignPatientToBedCommand(StaffAssignmentManager staffAssignmentManager, InboundPatientController inboundPatientController) {
+   public AssignPatientToBedCommand(StaffAssignmentManager staffAssignmentManager, InboundPatientSource inboundPatientController) {
       this.staffAssignmentManager = staffAssignmentManager;
       this.inboundPatientController = inboundPatientController;
    }

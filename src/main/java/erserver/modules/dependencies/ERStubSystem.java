@@ -1,8 +1,11 @@
 package erserver.modules.dependencies;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import erserver.modules.dependencies.gsonutils.LocalDateTypeAdapter;
 import erserver.modules.testtypes.Patient;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,9 @@ public class ERStubSystem {
 
    public static void main(String[] args) {
 
-      Gson gson = new Gson();
+      final Gson gson = new GsonBuilder()
+              .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+              .create();
 
       patientsInTransport = new ArrayList<>();
       Patient initialPatient = new Patient();

@@ -6,7 +6,7 @@ import java.util.TimerTask;
 public class ERServerMainController {
 
    private static StaffAssignmentManager staffAssignmentManager;
-   private static InboundPatientController inboundPatientController;
+   private static InboundPatientSource inboundPatientController;
    private static AlertScanner alertScanner;
 
    static {
@@ -24,7 +24,7 @@ public class ERServerMainController {
       timer.schedule(alertTask, 1000, 30000);
    }
 
-   public InboundPatientController getInboundPatientController() {
+   public InboundPatientSource getInboundPatientController() {
       return inboundPatientController;
    }
 
