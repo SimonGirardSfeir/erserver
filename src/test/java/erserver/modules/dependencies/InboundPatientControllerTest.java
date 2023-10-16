@@ -11,7 +11,7 @@ class InboundPatientControllerTest {
 
     @Test
     void testInboundXmlConversion() {
-        //Given
+        // Arrange
         String xmlForScenario = """
                 <Inbound>
                 \t<Patient>
@@ -22,9 +22,9 @@ class InboundPatientControllerTest {
                 \t\t<Birthdate></Birthdate>
                 \t</Patient>
                 </Inbound>""";
-        //When
+        // Act
         List<Patient> patients =  InboundPatientController.buildPatientsFromXml(xmlForScenario);
-        //Then
+        // Assert
         Patient expectedPatient = new Patient();
         expectedPatient.setName("John Doe");
         expectedPatient.setPriority(Priority.YELLOW);

@@ -71,10 +71,10 @@ public class DivergenceController {
          }
       }
       for (Staff cur : staff) {
-         if (StaffRole.DOCTOR.equals(cur.getRole())) {
+         if (StaffRole.DOCTOR.equals(cur.role())) {
             staffcur[0]++;
          }
-         else if (StaffRole.NURSE.equals(cur.getRole())) {
+         else if (StaffRole.NURSE.equals(cur.role())) {
             staffcur[1]++;
          }
       }
