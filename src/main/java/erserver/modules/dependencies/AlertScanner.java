@@ -1,8 +1,6 @@
 package erserver.modules.dependencies;
 
-import erserver.modules.dependencies.vendorpagersystem.PagerTransport;
 import erserver.modules.testtypes.Patient;
-import erserver.modules.dependencies.vendorpagersystem.PagerSystem;
 
 import java.util.HashSet;
 import java.util.List;
