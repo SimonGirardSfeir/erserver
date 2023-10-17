@@ -4,8 +4,8 @@ ERServer is the sample application for the [Pluralsight](http://pluralsight.com)
 
 ## Prerequisites / Requirements
 
-  * Java 8 or higher is required to compile and run ERServer.  
-  * [Maven 3.5+]( https://maven.apache.org/install.html) is also required.
+  * Java 17 or higher is required to compile and run ERServer.  
+  * [Maven 3.8.1+]( https://maven.apache.org/install.html) is also required.
   * And git, of course
 
 ## Running ERServer
