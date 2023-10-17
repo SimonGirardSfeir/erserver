@@ -20,14 +20,13 @@ class AlertScannerTest {
                 LocalDate.of(1980, 10, 16), Priority.YELLOW, "mild stroke");
         inboundPatientTestDouble.simulateNewInboundPatient(patient1);
         inboundPatientTestDouble.simulateNewInboundPatient(patient2);
-        AlertScannerTestingSubclass scanner = new AlertScannerTestingSubclass(new StaffAssignmentManager(), inboundPatientTestDouble);
-
+        AlertTransmitterTestDouble alertTransmitterTestDouble = new AlertTransmitterTestDouble();
+        AlertScanner alertScanner = new AlertScanner(new StaffAssignmentManager(), inboundPatientTestDouble, alertTransmitterTestDouble);
         // Act
-        scanner.scan();
+        alertScanner.scan();
 
         //Assert
-        assertThat(scanner.patientsAlertedFor).isEqualTo(List.of(patient1))
-                .doesNotContain(patient2);
+        assertThat(alertTransmitterTestDouble.getAlertsReceivedRequiringAck()).isEqualTo(List.of("111-111-1111: New inbound critical patient: 1"));
     }
     @Test
     void scanAlertsForPriorityYellowConditionHeartArrhythmiaPatients() {
@@ -39,29 +38,61 @@ class AlertScannerTest {
                 LocalDate.of(1985, 10, 16), Priority.YELLOW, "heart arrhythmia");
         inboundPatientTestDouble.simulateNewInboundPatient(patient1);
         inboundPatientTestDouble.simulateNewInboundPatient(patient2);
-        AlertScannerTestingSubclass scanner = new AlertScannerTestingSubclass(new StaffAssignmentManager(), inboundPatientTestDouble);
+        AlertTransmitterTestDouble alertTransmitterTestDouble = new AlertTransmitterTestDouble();
+        AlertScanner alertScanner = new AlertScanner(new StaffAssignmentManager(), inboundPatientTestDouble, alertTransmitterTestDouble);
 
         // Act
-        scanner.scan();
+        alertScanner.scan();
 
         //Assert
-        assertThat(scanner.patientsAlertedFor).isEqualTo(List.of(patient2))
-                .doesNotContain(patient1);
+        assertThat(alertTransmitterTestDouble.getAlertsReceived()).isEqualTo(List.of("111-111-1111: New inbound critical patient: 2"));
     }
 
-    private static class AlertScannerTestingSubclass extends AlertScanner {
-        public final List<Patient> patientsAlertedFor;
-        public AlertScannerTestingSubclass(StaffAssignmentManager staffAssignmentManager, InboundPatientSource inboundPatientController) {
-            super(staffAssignmentManager, inboundPatientController);
-            patientsAlertedFor = new ArrayList<>();
-        }
+    @Test
+    void onlyTransmitOnceForGivenInboundPatient() {
+        // Arrange
+        InboundPatientTestDouble inboundPatientTestDouble = new InboundPatientTestDouble();
+        Patient patient1 = new Patient(1, "John Doe",
+                LocalDate.of(1975, 10, 16), Priority.GREEN, "shortness of breath");
+        Patient patient2 = new Patient(2, "Sam Doe",
+                LocalDate.of(1985, 10, 16), Priority.YELLOW, "heart arrhythmia");
+        inboundPatientTestDouble.simulateNewInboundPatient(patient1);
+        inboundPatientTestDouble.simulateNewInboundPatient(patient2);
+        AlertTransmitterTestDouble alertTransmitterTestDouble = new AlertTransmitterTestDouble();
+        AlertScanner alertScanner = new AlertScanner(new StaffAssignmentManager(), inboundPatientTestDouble, alertTransmitterTestDouble);
 
+        // Act
+        alertScanner.scan();
+        alertScanner.scan();
+
+        //Assert
+        assertThat(alertTransmitterTestDouble.getAlertsReceived()).isEqualTo(List.of("111-111-1111: New inbound critical patient: 2"));
+    }
+
+    private static class AlertTransmitterTestDouble implements AlertTransmitter {
+        private final List<String> alertsReceived;
+        private final List<String> alertsReceivedRequiringAck;
+
+        public AlertTransmitterTestDouble() {
+            this.alertsReceived = new ArrayList<>();
+            this.alertsReceivedRequiringAck = new ArrayList<>();
+        }
         @Override
-        protected void alertForNewCriticalPatient(Patient patient) {
-            patientsAlertedFor.add(patient);
+        public void transmit(String targetDevice, String pageText) {
+            alertsReceived.add(targetDevice + ": " + pageText);
+
+        }
+        @Override
+        public void transmitRequiringAcknowledgement(String targetDevice, String pageText) {
+            alertsReceivedRequiringAck.add(targetDevice + ": " + pageText);
+        }
+        public List<String> getAlertsReceivedRequiringAck() {
+            return alertsReceivedRequiringAck;
+        }
+        public List<String> getAlertsReceived() {
+            return alertsReceived;
         }
     }
-
     private static class InboundPatientTestDouble implements InboundPatientSource {
         private final List<Patient> inbounds;
 

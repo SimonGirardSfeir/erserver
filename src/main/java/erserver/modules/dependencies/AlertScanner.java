@@ -15,12 +15,23 @@ public class AlertScanner {
    private final StaffAssignmentManager staffAssignmentManager;
    private final InboundPatientSource inboundPatientController;
    private final Set<Integer> criticalPatientNotificationsSent;
+   private final AlertTransmitter alertTransmitter;
+
 
    public AlertScanner(StaffAssignmentManager staffAssignmentManager,
                        InboundPatientSource inboundPatientController) {
       this.staffAssignmentManager = staffAssignmentManager;
       this.inboundPatientController = inboundPatientController;
       criticalPatientNotificationsSent = new HashSet<>();
+      this.alertTransmitter = new PagerSystemAlertTransmitter();
+   }
+
+   public AlertScanner(StaffAssignmentManager staffAssignmentManager, InboundPatientSource inboundPatientController,
+                       AlertTransmitter alertTransmitter) {
+      criticalPatientNotificationsSent = new HashSet<>();
+      this.staffAssignmentManager = staffAssignmentManager;
+      this.inboundPatientController = inboundPatientController;
+      this.alertTransmitter = alertTransmitter;
    }
 
    public void scan() {
@@ -46,10 +57,13 @@ public class AlertScanner {
 
    protected void alertForNewCriticalPatient(Patient patient) {
       try {
-         PagerTransport transport = PagerSystem.getTransport();
-         transport.initialize();
-         transport.transmitRequiringAcknowledgement(ADMIN_ON_CALL_DEVICE, "New inbound critical patient: " +
-            patient.getTransportId());
+         if(Priority.RED == patient.getPriority()) {
+            alertTransmitter.transmitRequiringAcknowledgement(ADMIN_ON_CALL_DEVICE, "New inbound critical patient: " +
+                    patient.getTransportId());
+         } else {
+            alertTransmitter.transmit(ADMIN_ON_CALL_DEVICE, "New inbound critical patient: " +
+                    patient.getTransportId());
+         }
          criticalPatientNotificationsSent.add(patient.getTransportId());
       } catch (RuntimeException e) {
          System.out.println("Failed attempt to use pager system to device " + ADMIN_ON_CALL_DEVICE);
